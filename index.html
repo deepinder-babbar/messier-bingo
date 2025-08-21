@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messier Objects Bingo</title>
+    <title>Messier Objects Bingo Sheet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom styles to ensure a clean, printable layout */
@@ -24,7 +24,7 @@
             background-color: #ffffff; /* White background for the sheet */
             border-radius: 6px; /* Rounded corners for the container */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
-            padding: 10px; /* Changed to 10px */
+            padding: 10px;
             max-width: 8.5in; /* Standard letter width */
             width: 100%; /* Make it responsive up to max-width */
             box-sizing: border-box;
@@ -38,7 +38,7 @@
             font-size: 2.5rem; /* Larger title */
             font-weight: 700; /* Bold */
             color: #333; /* Dark gray text */
-            margin-bottom: 15px; /* Changed to 15px */
+            margin-bottom: 15px;
             text-align: center;
             letter-spacing: 2px; /* Add some letter spacing */
             text-transform: uppercase;
@@ -82,7 +82,10 @@
             transform: scale(1.01); /* Slight zoom on hover */
         }
 
-        /* Removed color classes for different object types */
+        .bingo-cell.selected-for-info {
+            border: 3px solid #FFD700; /* Gold border for selected cell */
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* Gold glow */
+        }
 
         .print-button {
             padding: 12px 25px;
@@ -112,10 +115,7 @@
             color: #555;
             text-align: center;
             line-height: 1.6;
-            /* Removed flexbox styles for legend items */
         }
-
-        /* Removed legend-item and legend-color-box styles */
 
         .llm-controls {
             margin-top: 20px;
@@ -200,7 +200,7 @@
                 box-shadow: none; /* Remove shadow for print */
                 border-radius: 0; /* Remove border radius for print */
                 margin: 0 auto; /* Added to center horizontally on print */
-                margin-top: 0.2in; /* Changed to 0.4in */
+                margin-top: 0.2in; /* Changed to 0.2in */
                 padding: 0;
                 width: 8.5in; /* Fixed width for letter paper */
                 height: 11in; /* Fixed height for letter paper */
@@ -242,7 +242,7 @@
         </div>
         <div class="legend" id="legend-container">
             <strong>Legend:</strong>
-            OC: Open cluster | GC: Globular cluster | DN: Diffuse nebula | PN: Planetary Nebula | SNR: Supernova Remnant | GA: Galaxy
+            OC: Open cluster | GC: Globular cluster | DN: Diffuse nebula | PN: Planetary Nebula | SNR: Supernova Remnant | GA: Galaxy | EN: Emission Nebula | RN: Reflection Nebula | SC: Star Cloud | OD: Optical Double | BSG: Barred Spiral Galaxy | EG: Elliptical Galaxy | SG: Spiral Galaxy
         </div>
 
         <div class="llm-controls">
@@ -291,7 +291,7 @@
             "M29 - Cooling Tower Cluster (OC)",
             "M30 - Jellyfish Cluster (GC)",
             "M31 - Andromeda Galaxy (SG)",
-            "M32 - Andromeda Satellite #1 (DwarfEG)",
+            "M32 - Andromeda Satellite #1 (Dwarf EG)",
             "M33 - Triangulum / Pinwheel Galaxy (SG)",
             "M34 - Spiral Cluster (OC)",
             "M35 - Shoe-Buckle Cluster (OC)",
