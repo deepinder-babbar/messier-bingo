@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messier Objects Bingo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles to ensure a clean, printable layout */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f0f0; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            padding: 20px;
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+
+        .bingo-container {
+            background-color: #ffffff; /* White background for the sheet */
+            border-radius: 6px; /* Rounded corners for the container */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            padding: 10px; /* Changed to 10px */
+            max-width: 8.5in; /* Standard letter width */
+            width: 100%; /* Make it responsive up to max-width */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .bingo-title {
+            font-size: 2.5rem; /* Larger title */
+            font-weight: 700; /* Bold */
+            color: #333; /* Dark gray text */
+            margin-bottom: 15px; /* Changed to 15px */
+            text-align: center;
+            letter-spacing: 2px; /* Add some letter spacing */
+            text-transform: uppercase;
+        }
+
+        .bingo-grid {
+            display: grid;
+            /* Create a grid with 10 columns, making each column take equal space */
+            grid-template-columns: repeat(10, 1fr);
+            /* Set row height to be proportional to cell width, ensuring square cells */
+            grid-auto-rows: minmax(min-content, 1fr); /* Changed from 1fr to adjust height based on content */
+            gap: 2px; /* Small gap between cells */
+            width: 100%; /* Fill container width */
+            border: 2px solid #666; /* Border around the grid */
+            border-radius: 8px; /* Slightly rounded grid corners */
+            overflow: hidden; /* Ensures rounded corners are visible */
+        }
+
+        .bingo-cell {
+            background-color: #e0e0e0; /* Light gray cell background */
+            border: 1px solid #ccc; /* Cell border */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            line-height: 1.2; /* Tighter line spacing for multi-line text */
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            user-select: none; /* Prevent text selection */
+            transition: transform 0.1s ease; /* Smooth transition for hover/click */
+            padding: 5px;
+            box-sizing: border-box;
+            /* Ensure long words break rather than overflowing */
+            overflow-wrap: break-word;
+            min-height: 60px; /* Added a minimum height to cells for better consistency */
+            color: #333; /* Default text color for cells */
+        }
+
+        .bingo-cell:hover {
+            transform: scale(1.01); /* Slight zoom on hover */
+        }
+
+        /* Removed color classes for different object types */
+
+        .print-button {
+            padding: 12px 25px;
+            background-color: #007bff; /* Blue button */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .print-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            transform: translateY(-2px); /* Lift effect */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .legend {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #555;
+            text-align: center;
+            line-height: 1.6;
+            /* Removed flexbox styles for legend items */
+        }
+
+        /* Removed legend-item and legend-color-box styles */
+
+        .llm-controls {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column; /* Keep column for the overall LLM section */
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .llm-buttons-row {
+            display: flex; /* Make this a flex row */
+            gap: 15px; /* Space between buttons */
+            justify-content: center; /* Center buttons horizontally */
+            width: 100%; /* Take full width of parent */
+        }
+
+        .llm-button {
+            padding: 12px 25px;
+            background-color: #6C63FF; /* Purple button */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .llm-button:hover {
+            background-color: #5750d4; /* Darker purple on hover */
+            transform: translateY(-2px); /* Lift effect */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .llm-button:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .llm-info-display {
+            width: 100%;
+            min-height: 80px;
+            padding: 15px;
+            background-color: #e6e6fa; /* Light lavender background */
+            border: 1px solid #c0c0e0;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #333;
+            line-height: 1.5;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex; /* Use flexbox for content and image */
+            flex-direction: column;
+            gap: 10px; /* Space between text and image */
+            align-items: center; /* Center content horizontally */
+        }
+
+        .llm-info-image {
+            max-width: 100%; /* Ensure image fits within container */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 4px; /* Slightly rounded corners for image */
+            display: none; /* Hidden by default */
+            border: 1px solid #ccc; /* Add a subtle border */
+        }
+
+        /* Print specific styles */
+        @media print {
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+                display: block; /* Remove flexbox for print */
+            }
+
+            .bingo-container {
+                box-shadow: none; /* Remove shadow for print */
+                border-radius: 0; /* Remove border radius for print */
+                margin: 0 auto; /* Added to center horizontally on print */
+                margin-top: 0.2in; /* Changed to 0.4in */
+                padding: 0;
+                width: 8.5in; /* Fixed width for letter paper */
+                height: 11in; /* Fixed height for letter paper */
+                display: block;
+                page-break-after: always; /* Ensure each card is on a new page if printing multiple */
+            }
+
+            .print-button {
+                display: none; /* Hide print button when printing */
+            }
+
+            .llm-controls {
+                display: none; /* Hide LLM controls (including "Get Info" button) when printing */
+            }
+
+            .legend {
+                display: block; /* Ensure the legend is visible when printing */
+                margin-top: 0; /* Adjust margin for print layout if needed */
+                padding-top: 10px; /* Add some padding to separate from grid if needed */
+                border: none; /* Remove border for cleaner print */
+                background-color: transparent; /* Transparent background for print */
+                box-shadow: none; /* Remove shadow for print */
+                font-size: 0.75rem; /* Adjust legend font size for print */
+            }
+
+            .bingo-cell {
+                font-size: 0.7rem; /* Keep consistent font size for printing */
+                padding: 5px; /* Keep consistent padding for printing */
+                min-height: 60px; /* Ensure min-height applies to print as well */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bingo-container">
+        <h1 class="bingo-title">Messier Objects Bingo Sheet</h1>
+        <div id="bingo-grid" class="bingo-grid">
+            <!-- Bingo cells will be generated here by JavaScript -->
+        </div>
+        <div class="legend" id="legend-container">
+            <strong>Legend:</strong>
+            OC: Open cluster | GC: Globular cluster | DN: Diffuse nebula | PN: Planetary Nebula | SNR: Supernova Remnant | GA: Galaxy
+        </div>
+
+        <div class="llm-controls">
+            <div class="llm-buttons-row">
+                <button id="get-info-button" class="llm-button" disabled>Get Info About Selected Object ✨</button>
+                <button id="print-button" class="print-button">Print Bingo Sheet</button>
+            </div>
+            <div id="llm-info-display" class="llm-info-display">
+                Click on a Messier object in the grid, then click "Get Info" to learn more!
+                <img id="llm-object-image" class="llm-info-image" alt="Messier Object Image Placeholder">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // List of all 110 Messier Objects with common names and types
+        const messierObjects = [
+            "M1 - Crab Nebula (SNR)",
+            "M2 - (GC)",
+            "M3 - (GC)",
+            "M4 - Spider Cluster (GC)",
+            "M5 - Rose Cluster (GC)",
+            "M6 - Butterfly Cluster (OC)",
+            "M7 - Ptolemy's Cluster (OC)",
+            "M8 - Lagoon Nebula (EN)",
+            "M9 - (GC)",
+            "M10 - (GC)",
+            "M11 - Wild Duck Cluster (OC)",
+            "M12 - (GC)",
+            "M13 - Great Hercules Cluster (GC)",
+            "M14 - (GC)",
+            "M15 - Great Pegasus Cluster (GC)",
+            "M16 - Eagle Nebula (EN+OC)",
+            "M17 - Omega, Horseshoe, or Checkmark Nebula (EN)",
+            "M18 - Black Swan Cluster (OC)",
+            "M19 - (GC)",
+            "M20 - Trifid Nebula (EN+RN+ DN+OC)",
+            "M21 - Webb's Cross Cluster (OC)",
+            "M22 - Great Sagittarius Cluster (GC)",
+            "M23 - (OC)",
+            "M24 - Small Sagittarius Star Cloud (SC)",
+            "M25 - (OC)",
+            "M26 - (OC)",
+            "M27 - Dumbbell Nebula (PN)",
+            "M28 - (GC)",
+            "M29 - Cooling Tower Cluster (OC)",
+            "M30 - Jellyfish Cluster (GC)",
+            "M31 - Andromeda Galaxy (SG)",
+            "M32 - Andromeda Satellite #1 (DwarfEG)",
+            "M33 - Triangulum / Pinwheel Galaxy (SG)",
+            "M34 - Spiral Cluster (OC)",
+            "M35 - Shoe-Buckle Cluster (OC)",
+            "M36 - Pinwheel Cluster (OC)",
+            "M37 - Salt and Pepper Cluster (OC)",
+            "M38 - Starfish Cluster (OC)",
+            "M39 - Pyramid Cluster (OC)",
+            "M40 - Winnecke 4 (OD)",
+            "M41 - Little Beehive Cluster (OC)",
+            "M42 - Great Orion Nebula (EN+RN)",
+            "M43 - De Mairan's Nebula (EN+RN)",
+            "M44 - Beehive Cluster, Praesepe (OC)",
+            "M45 - Pleiades, Seven Sisters, Subaru (OC)",
+            "M46 - (OC)",
+            "M47 - (OC)",
+            "M48 - (OC)",
+            "M49 - (EG)",
+            "M50 - Heart-Shaped Cluster (OC)",
+            "M51 - Whirlpool Galaxy (SG)",
+            "M52 - Scorpion Cluster (OC)",
+            "M53 - (GC)",
+            "M54 - (GC)",
+            "M55 - Specter Cluster (GC)",
+            "M56 - (GC)",
+            "M57 - Ring Nebula (PN)",
+            "M58 - (BSG)",
+            "M59 - (EG)",
+            "M60 - (EG)",
+            "M61 - Swelling Spiral Galaxy (SG)",
+            "M62 - Flickering Globular (GC)",
+            "M63 - Sunflower Galaxy (SG)",
+            "M64 - Black Eye, Sleeping Beauty Galaxy (SG)",
+            "M65 - Leo Triplet (BSG)",
+            "M66 - Leo Triplet (BSG)",
+            "M67 - King Cobra, Golden Eye Cluster (OC)",
+            "M68 - (GC)",
+            "M69 - (GC)",
+            "M70 - (GC)",
+            "M71 - Angelfish Cluster (GC)",
+            "M72 - (GC)",
+            "M73 - (Asterism)",
+            "M74 - Phantom Galaxy (SG)",
+            "M75 - (GC)",
+            "M76 - Little Dumbbell Nebula (PN)",
+            "M77 - Cetus A or Squid Galaxy (SG)",
+            "M78 - (Diffuse RN)",
+            "M79 - (GC)",
+            "M80 - (GC)",
+            "M81 - Bode's Galaxy (SG)",
+            "M82 - Cigar Galaxy (Starburst / Irregular galaxy)",
+            "M83 - Southern Pinwheel Galaxy (BSG)",
+            "M84 - (EG)",
+            "M85 - (SG)",
+            "M86 - (EG)",
+            "M87 - Virgo A (EG)",
+            "M88 - (SG)",
+            "M89 - (EG)",
+            "M90 - (SG)",
+            "M91 - (BSG)",
+            "M92 - (GC)",
+            "M93 - Critter Cluster (OC)",
+            "M94 - Crocodile Eye, Cat's Eye Galaxy (SG)",
+            "M95 - (BSG)",
+            "M96 - (SG)",
+            "M97 - Owl Nebula (PN)",
+            "M98 - (SG)",
+            "M99 - St. Catherine's Wheel (SG)",
+            "M100 - Mirror Galaxy (SG)",
+            "M101 - Pinwheel Galaxy (SG)",
+            "M102 - Spindle Galaxy (SG)",
+            "M103 - (OC)",
+            "M104 - Sombrero Galaxy (SG)",
+            "M105 - (EG)",
+            "M106 - (SG)",
+            "M107 - Crucifix Cluster (GC)",
+            "M108 - Surfboard Galaxy (BSG)",
+            "M109 - Vacuum Cleaner Galaxy (BSG)",
+            "M110 - Andromeda Satellite #2 (Dwarf EG)"
+        ];
+
+        // Removed objectTypeLegend constant
+
+        let selectedMessierObject = null; // To store the currently selected object for info
+        let lastSelectedCell = null; // To keep track of the previously selected cell element
+
+        // Get elements (moved inside DOMContentLoaded)
+        let bingoGrid;
+        let getInfoButton;
+        let llmInfoDisplay;
+        let printButton;
+        let llmObjectImage; // New: Get the image element
+        let legendContainer; // New: Get the legend container
+
+        // Function to handle cell clicks
+        function handleCellClick() {
+            // Removed 'selected-for-info' class handling for visual feedback
+            if (lastSelectedCell) {
+                lastSelectedCell.classList.remove('selected-for-info');
+            }
+
+            // Set the current cell as selected for info (for the LLM button)
+            selectedMessierObject = this.textContent; // Reverted to using textContent directly
+            this.classList.add('selected-for-info'); // Re-added for LLM button functionality
+            lastSelectedCell = this; // Update last selected cell
+
+            // Enable the info button
+            getInfoButton.disabled = false;
+
+            // Clear previous info and hide image when a new cell is selected
+            llmInfoDisplay.textContent = "Click 'Get Info' to learn more about " + selectedMessierObject + "!";
+            llmObjectImage.style.display = 'none';
+            llmObjectImage.src = ''; // Clear image source
+        }
+
+        // Generate the bingo cells in serial order
+        function generateBingoSheet() {
+            bingoGrid.innerHTML = ''; // Clear existing cells
+            for (let i = 0; i < messierObjects.length; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('bingo-cell');
+                // Removed type class assignment
+                cell.textContent = messierObjects[i]; // Reverted to using string directly
+                // Removed dataset.fullName
+                cell.addEventListener('click', handleCellClick); // Attach the new handler
+                bingoGrid.appendChild(cell);
+            }
+        }
+
+        // Removed generateLegend function
+
+        // Function to call Gemini API for object information
+        async function getMessierObjectInfo() {
+            if (!selectedMessierObject) {
+                llmInfoDisplay.textContent = "Please click on a Messier object in the grid first.";
+                return;
+            }
+
+            llmInfoDisplay.textContent = "Fetching information... Please wait.";
+            llmObjectImage.style.display = 'none'; // Hide image during loading
+            getInfoButton.disabled = true; // Disable button during fetch
+
+            try {
+                const prompt = `Provide a very brief (2-3 sentences) general description of ${selectedMessierObject}, suitable for a casual astronomy enthusiast.`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Canvas will automatically provide the API key
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                let response;
+                let result;
+                let retryCount = 0;
+                const maxRetries = 3;
+                const baseDelay = 1000; // 1 second
+
+                while (retryCount < maxRetries) {
+                    try {
+                        response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (response.status === 429) { // Too Many Requests
+                            const delay = baseDelay * Math.pow(2, retryCount);
+                            retryCount++;
+                            await new Promise(res => setTimeout(res, delay));
+                            continue; // Retry the request
+                        }
+
+                        result = await response.json();
+                        break; // If successful or non-retryable error, break loop
+                    } catch (error) {
+                        // Network error or other fetch-related issues
+                        const delay = baseDelay * Math.pow(2, retryCount);
+                        retryCount++;
+                        await new Promise(res => setTimeout(res, delay));
+                        // Do not log retry attempts as errors in console
+                        if (retryCount >= maxRetries) {
+                            throw error; // If max retries reached, throw the error
+                        }
+                    }
+                }
+
+                if (!response || !response.ok) {
+                    llmInfoDisplay.textContent = `Error: Unable to fetch data. Status: ${response ? response.status : 'N/A'}`;
+                    return;
+                }
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    llmInfoDisplay.textContent = text; // Display text description
+
+                    // Generate and display placeholder image
+                    const objectNameForImage = selectedMessierObject.split(' ')[0]; // e.g., "M1"
+                    const imageUrl = `https://placehold.co/200x150/8a2be2/ffffff?text=${encodeURIComponent(objectNameForImage)}`;
+                    llmObjectImage.src = imageUrl;
+                    llmObjectImage.alt = `${selectedMessierObject} Placeholder`;
+                    llmObjectImage.style.display = 'block'; // Show the image
+
+                    // Fallback for image loading errors
+                    llmObjectImage.onerror = () => {
+                        llmObjectImage.style.display = 'none'; // Hide broken image
+                        // llmInfoDisplay.textContent += "\n(Image could not be loaded)"; // Optionally add a message
+                    };
+
+                } else {
+                    llmInfoDisplay.textContent = "Could not get information for this object.";
+                    llmObjectImage.style.display = 'none';
+                }
+
+            } catch (error) {
+                console.error("Gemini API call failed:", error);
+                llmInfoDisplay.textContent = `Failed to get information. Please try again.`;
+                llmObjectImage.style.display = 'none';
+            } finally {
+                getInfoButton.disabled = false; // Re-enable button
+            }
+        }
+
+        // Generate the sheet when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get elements inside DOMContentLoaded to ensure they exist
+            bingoGrid = document.getElementById('bingo-grid');
+            getInfoButton = document.getElementById('get-info-button');
+            llmInfoDisplay = document.getElementById('llm-info-display');
+            printButton = document.getElementById('print-button');
+            llmObjectImage = document.getElementById('llm-object-image'); // Get the image element
+            legendContainer = document.getElementById('legend-container'); // Get the legend container
+
+            generateBingoSheet();
+            // Removed generateLegend() call
+
+            // Add event listeners
+            getInfoButton.addEventListener('click', getMessierObjectInfo);
+            printButton.addEventListener('click', () => {
+                window.print(); // Trigger the browser's print dialog
+            });
+        });
+    </script>
+</body>
+</html>
