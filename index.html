@@ -44,6 +44,19 @@
             text-transform: uppercase;
         }
 
+        .info-text-on-screen {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            text-align: center;
+            max-width: 700px; /* Limit width for readability */
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #e0f2f7; /* Light blue background for emphasis */
+            border-radius: 8px;
+            color: #263238; /* Darker text for readability */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
         .bingo-grid {
             display: grid;
             /* Create a grid with 10 columns, making each column take equal space */
@@ -226,6 +239,10 @@
                 font-size: 0.75rem; /* Adjust legend font size for print */
             }
 
+            .info-text-on-screen {
+                display: none; /* Hide this text when printing */
+            }
+
             .bingo-cell {
                 font-size: 0.7rem; /* Keep consistent font size for printing */
                 padding: 5px; /* Keep consistent padding for printing */
@@ -237,6 +254,12 @@
 <body>
     <div class="bingo-container">
         <h1 class="bingo-title">Messier Objects Bingo Sheet</h1>
+        <div class="info-text-on-screen">
+            Inspired by French astronomer <a href="https://en.wikipedia.org/wiki/Charles_Messier" target="_blank" class="text-blue-600 hover:underline">Charles Messier</a> (1730-1817), who catalogued <a href="https://en.wikipedia.org/wiki/Messier_object" target="_blank" class="text-blue-600 hover:underline">110 stunning deep-sky objects like galaxies, nebulae, and star clusters</a>, this challenge is a fun, accessible way for everyone to explore the cosmos at their own pace! Think of it as an easy-going '<a href="https://en.wikipedia.org/wiki/Messier_marathon" target="_blank" class="text-blue-600 hover:underline">Messier Marathon</a>' tailored for our public star parties.
+            To get started, simply print your MOBC sheet, or collect a print at the star party Welcome Desk.
+            Here's how it works: Our dedicated volunteers will be pointing their telescopes at various Messier Objects. As you view each object, we encourage you to note its type, shape, and other features. Once you've completed your observation, a volunteer will stamp your MOBC Sheet! This exciting challenge continues throughout the season, culminating at our last public star party of the year on <strong>September 19, 2025</strong>.
+            Get ready for a structured yet fun-filled learning experience that's perfect for all ages and levels of stargazers!
+        </div>
         <div id="bingo-grid" class="bingo-grid">
             <!-- Bingo cells will be generated here by JavaScript -->
         </div>
